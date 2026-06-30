@@ -13,19 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y python3-pip python3-setuptools python3-dev unzip openjdk-17-jdk
-          pip3 install --upgrade buildozer
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platform-tools
+            build-tools;37.0.0
+            platforms;android-35
+          accept-android-sdk-licenses: true
+
+      - name: Install buildozer
+        run: |
+          pip3 install --upgrade buildozer cython
 
       - name: Build APK
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "build-tools;37.0.0"
           buildozer android debug
 
       - name: Upload APK
