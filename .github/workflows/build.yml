@@ -12,26 +12,22 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y python3-pip python3-setuptools python3-dev
+        sudo apt install -y python3-pip python3-setuptools python3-dev unzip openjdk-17-jdk
         sudo pip3 install --upgrade buildozer
-    - name: Accept Licenses
+    - name: Build with Buildozer
       run: |
         # دروستکردنی فۆڵدەری پێویست
         mkdir -p ~/.android
         touch ~/.android/repositories.cfg
         
-        # دابەزاندنی cmdline-tools ئەگەر پێویست بوو بۆ sdkmanager
-        # پاشان پەسەندکردنی هەموو مۆڵەتەکان بە بێ بەکارهێنانی 'yes' ی کێشەدار
-        # ئێمە مۆڵەتەکان دەدەینە 'sdkmanager' بە شێوەیەکی راستەوخۆ
-        # ئەم فەرمانە هەموو مۆڵەتەکان لە ناو sdk-دا پەسەند دەکات
-        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
-        echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-    - name: Build with Buildozer
-      run: |
+        # بیڵدۆزەر خۆی داوا دەکات مۆڵەتەکان قبوڵ بکەین
+        # ئەمجارە هەوڵدەدەین بە دروستی بیڵد بکەین
         buildozer android debug
+      env:
+        # ئەم گۆڕاوە ڕێگە بە بیڵدۆزەر دەدات مۆڵەتەکان بە ئۆتۆماتیکی قبوڵ بکات
+        ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: package
         path: bin/*.apk
-
