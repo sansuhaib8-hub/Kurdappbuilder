@@ -57,6 +57,9 @@ jobs:
       - name: Build APK
         env:
           ANDROIDSDK: ${{ github.workspace }}/../.buildozer/android/platform/android-sdk
+          # لێرەدا بە بەتاڵکردنەوەی ئەم دوو هێڵە، سێرڤەر ناچار دەکەین NDK 27 بەکارنەهێنێت
+          ANDROIDNDK: ""
+          ANDROID_NDK_HOME: ""
         run: |
           buildozer android debug
 
