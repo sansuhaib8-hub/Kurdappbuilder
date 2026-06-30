@@ -12,19 +12,21 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y python3-pip python3-setuptools python3-dev unzip openjdk-17-jdk
+        sudo apt install -y python3-pip python3-setuptools python3-dev
         sudo pip3 install --upgrade buildozer
     - name: Build with Buildozer
       run: |
-        # دروستکردنی فۆڵدەری پێویست
-        mkdir -p ~/.android
-        touch ~/.android/repositories.cfg
+        # دروستکردنی فۆڵدەری مۆڵەتەکان و دانانی پەسەندکردنی ئۆتۆماتیکی
+        mkdir -p /home/runner/.android
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
         
-        # بیڵدۆزەر خۆی داوا دەکات مۆڵەتەکان قبوڵ بکەین
-        # ئەمجارە هەوڵدەدەین بە دروستی بیڵد بکەین
+        # پەسەندکردنی مۆڵەتەکان بە Hash (ئەمە ئەو ڕێگەیە کە گێتهەب قبوڵی دەکات)
+        echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo -e "\nd56f5187478651e0694bb1036c730d16c0d8a981" >> /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        
+        # دەستپێکردنی بیڵد
         buildozer android debug
       env:
-        # ئەم گۆڕاوە ڕێگە بە بیڵدۆزەر دەدات مۆڵەتەکان بە ئۆتۆماتیکی قبوڵ بکات
         ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
     - name: Upload APK
       uses: actions/upload-artifact@v4
