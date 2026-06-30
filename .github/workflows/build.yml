@@ -58,5 +58,10 @@ jobs:
 
       - name: Build APK with Auto-License Accept
         run: |
-          # ناردنی فەرمانی yes بۆ قبووڵکردنی ئۆتۆماتیکی مەرجەکانی گوگل و Build-Tools 37
           yes | buildozer android debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: bin/*.apk
