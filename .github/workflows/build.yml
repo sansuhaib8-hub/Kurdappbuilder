@@ -39,11 +39,7 @@ jobs:
           ln -sfn "$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager" "$SDK/tools/bin/sdkmanager"
 
           mkdir -p "$SDK/licenses"
-          cat > "$SDK/licenses/android-sdk-license" <<EOL
-24333f8a63b6825ea9c5514f83c2829b004d1fee
-8933bad161af4178b1185d1a37fbf41ea5269c55
-84835b44136933534d07d1f5624778d91c28c894
-EOL
+          printf '24333f8a63b6825ea9c5514f83c2829b004d1fee\n8933bad161af4178b1185d1a37fbf41ea5269c55\n84835b44136933534d07d1f5624778d91c28c894\n' > "$SDK/licenses/android-sdk-license"
 
           yes | "$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager" --licenses
 
