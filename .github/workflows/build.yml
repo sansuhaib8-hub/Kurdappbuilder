@@ -1,42 +1,7 @@
-name: Build APK
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y python3-pip python3-setuptools python3-dev unzip openjdk-17-jdk
-        sudo pip3 install --upgrade buildozer
-    - name: Setup SDK and Build
-      run: |
-        # دروستکردنی پێکهاتەی پێویست بۆ ئەوەی Buildozer ڕازی بێت
-        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/tools/bin
-        
-        # دابەزاندنی cmdline-tools
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-        unzip -q commandlinetools-linux-11076708_latest.zip
-        
-        # لکاندنی sdkmanager بۆ ئەو شوێنەی کە بیڵدۆزەر چاوەڕێی دەکات
-        # ئەمە ئەو کێشەی "does not exist" چارەسەر دەکات
-        ln -s $PWD/cmdline-tools/bin/sdkmanager /home/runner/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
-        
-        # پەسەندکردنی مۆڵەتەکان
-        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
-        printf "8933bad161af4178b1185d1a37fbf41ea5269c55\n84835b44136933534d07d1f5624778d91c28c894\n" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-        
-        # بیڵدکردن
-        buildozer android debug
-      env:
-        ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: package
-        path: bin/*.apk
+- name: Setup SDK and Build
+  run: |
+    yes | sdkmanager --licenses
+    sdkmanager "platform-tools" "build-tools;37.0.0"
+    buildozer android debug
+  env:
+    ANDROID_HOME: $ANDROID_SDK_ROOT
