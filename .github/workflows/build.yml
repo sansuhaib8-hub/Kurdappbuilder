@@ -12,22 +12,23 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y python3-pip python3-setuptools python3-dev
+        sudo apt install -y python3-pip python3-setuptools python3-dev unzip openjdk-17-jdk
         sudo pip3 install --upgrade buildozer
+    - name: Prepare SDK
+      run: |
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools
+        cd /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        unzip -q commandlinetools-linux-11076708_latest.zip
+        mv cmdline-tools latest
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
+        printf "8933bad161af4178b1185d1a37fbf41ea5269c55\n84835b44136933534d07d1f5624778d91c28c894\n" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        
     - name: Build with Buildozer
       run: |
-        # دروستکردنی فۆڵدەری مۆڵەتەکان و دانانی پەسەندکردنی ئۆتۆماتیکی
-        mkdir -p /home/runner/.android
-        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
-        
-        # پەسەندکردنی مۆڵەتەکان بە Hash (ئەمە ئەو ڕێگەیە کە گێتهەب قبوڵی دەکات)
-        echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-        echo -e "\nd56f5187478651e0694bb1036c730d16c0d8a981" >> /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-        
-        # دەستپێکردنی بیڵد
+        export ANDROID_HOME=/home/runner/.buildozer/android/platform/android-sdk
+        export PATH=$PATH:/home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
         buildozer android debug
-      env:
-        ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
