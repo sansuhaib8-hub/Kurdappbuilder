@@ -5,8 +5,9 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
+from kivy.graphics import Color, Rectangle
 
-# ڕەنگی پێشینەی تاریکی سایبەرپەنک بەپێی وێنەکە
+# ڕەنگی پێشینەی گشتی تاریک
 Window.clearcolor = (0.05, 0.06, 0.1, 1)
 
 class KurdAppBuilder(App):
@@ -37,7 +38,7 @@ class KurdAppBuilder(App):
         # ----------------- بەشی ناوەڕاست (MAIN BODY) -----------------
         main_body = BoxLayout(orientation='horizontal', size_hint_y=0.9, spacing=10)
         
-        # لایەنی چەپ: لیستی پێکهاتەکان (LAYOUT)
+        # لایەنی چەپ: لیستی پێکهاتەکان
         left_sidebar = BoxLayout(orientation='vertical', size_hint_x=0.2, spacing=5)
         left_sidebar.add_widget(Label(text="[b]LAYOUT[/b]", markup=True, color=(0, 0.8, 1, 1), size_hint_y=0.1))
         left_sidebar.add_widget(Button(text="Text Component", size_hint_y=0.15, background_color=(0.1, 0.15, 0.25, 1)))
@@ -47,17 +48,29 @@ class KurdAppBuilder(App):
         
         # ناوەڕاست: شوێنی مۆبایلە ساختەکە (WORKSPACE)
         workspace = FloatLayout(size_hint_x=0.5)
+        
         phone_screen = BoxLayout(
             orientation='vertical',
             size_hint=(None, None),
             size=(240, 420),
-            pos_hint={'center_x': 0.5, 'center_y': 0.5},
-            background_color=(0.02, 0.03, 0.05, 1)
+            pos_hint={'center_x': 0.5, 'center_y': 0.5}
         )
+        
+        # شێوازی دروستی ڕەنگکردنی پاشبنەمای BoxLayout لە ڕێگەی Canvas
+        with phone_screen.canvas.before:
+            Color(0.02, 0.03, 0.05, 1)
+            phone_rect = Rectangle(pos=phone_screen.pos, size=phone_screen.size)
+            
+        # بەستنەوەی قەبارەی ڕەنگەکە بە قەبارەی شاشەکەوە تا تێک نەچێت
+        phone_screen.bind(
+            pos=lambda obj, val: setattr(phone_rect, 'pos', val),
+            size=lambda obj, val: setattr(phone_rect, 'size', val)
+        )
+        
         phone_screen.add_widget(Label(text="KurdConnect Phone Frame", color=(0.5, 0.5, 0.5, 1)))
         workspace.add_widget(phone_screen)
         
-        # لایەنی ڕاست: پانێڵی تایبەتمەندییەکان (PROPERTIES)
+        # لایەنی ڕاست: پانێڵی تایبەتمەندییەکان
         right_sidebar = BoxLayout(orientation='vertical', size_hint_x=0.3, spacing=5)
         right_sidebar.add_widget(Label(text="[b]PROPERTIES[/b]", markup=True, color=(0, 0.8, 1, 1), size_hint_y=0.1))
         right_sidebar.add_widget(Label(text="ID: btn_send", halign='left', size_hint_y=0.1))
