@@ -21,12 +21,12 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            build-tools;37.0.0
-            platforms;android-35
-          accept-android-sdk-licenses: true
+
+      - name: Install Android packages
+        run: |
+          sdkmanager "platform-tools"
+          sdkmanager "build-tools;37.0.0"
+          sdkmanager "platforms;android-35"
 
       - name: Install buildozer
         run: |
