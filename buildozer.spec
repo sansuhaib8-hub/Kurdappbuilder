@@ -118,13 +118,13 @@ android.api = 33
 android.sdk = 33
 
 # (str) Android NDK version to use
-android.ndk = 25b
+android.ndk = 27.3.13750724
 
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
 android.ndk_api = 21
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-#android.ndk_path =
+android.ndk_path = /usr/local/lib/android/sdk/ndk/27.3.13750724
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
 #android.sdk_path =
