@@ -21,8 +21,8 @@ jobs:
 
       - name: Accept Android licenses and build
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "build-tools;37.0.0"
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;37.0.0"
           buildozer android debug
         env:
           ANDROID_HOME: $ANDROID_SDK_ROOT
