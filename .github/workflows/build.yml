@@ -19,6 +19,11 @@ jobs:
 
       - uses: android-actions/setup-android@v3
 
+      - name: Install autotools dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool libtool-bin autoconf-archive pkg-config
+
       - name: Install Buildozer
         run: |
           python3 -m pip install --user --upgrade pip
