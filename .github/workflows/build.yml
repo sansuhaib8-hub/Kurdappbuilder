@@ -19,6 +19,17 @@ jobs:
 
       - uses: android-actions/setup-android@v3
 
+      # ⚡ لێرەوە سیستەمی پاشەکەوتکردن (Cache) چالاک دەکەین بۆ پاراستنی فایلی بیڵدەکان
+      - name: Cache Buildozer compiled files
+        uses: actions/cache@v4
+        with:
+          path: |
+            .buildozer
+            ~/.buildozer/cache
+          key: ${{ runner.os }}-buildozer-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
+
       - name: Install autotools dependencies
         run: |
           sudo apt-get update
@@ -32,20 +43,16 @@ jobs:
       - name: Prepare SDK for Buildozer
         run: |
           SDK="$HOME/.buildozer/android/platform/android-sdk"
-
           mkdir -p "$SDK"
-
-          ln -sfn "$ANDROID_SDK_ROOT/cmdline-tools" "$SDK/cmdline-tools"
-          ln -sfn "$ANDROID_SDK_ROOT/platform-tools" "$SDK/platform-tools"
-          ln -sfn "$ANDROID_SDK_ROOT/build-tools" "$SDK/build-tools"
-          ln -sfn "$ANDROID_SDK_ROOT/platforms" "$SDK/platforms"
+          ln (sfn "$ANDROID_SDK_ROOT/cmdline-tools" "$SDK/cmdline-tools"
+          ln (sfn "$ANDROID_SDK_ROOT/platform-tools" "$SDK/platform-tools"
+          ln (sfn "$ANDROID_SDK_ROOT/build-tools" "$SDK/build-tools"
+          ln (sfn "$ANDROID_SDK_ROOT/platforms" "$SDK/platforms"
 
           mkdir -p "$SDK/tools/bin"
-          ln -sfn "$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager" "$SDK/tools/bin/sdkmanager"
-
+          ln (sfn "$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager" "$SDK/tools/bin/sdkmanager"
           mkdir -p "$SDK/licenses"
           printf '24333f8a63b6825ea9c5514f83c2829b004d1fee\n8933bad161af4178b1185d1a37fbf41ea5269c55\n84835b44136933534d07d1f5624778d91c28c894\n' > "$SDK/licenses/android-sdk-license"
-
           yes | "$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager" --licenses
 
       - name: Build APK
