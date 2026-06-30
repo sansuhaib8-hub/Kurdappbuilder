@@ -14,20 +14,26 @@ jobs:
         sudo apt update
         sudo apt install -y python3-pip python3-setuptools python3-dev unzip openjdk-17-jdk
         sudo pip3 install --upgrade buildozer
-    - name: Prepare SDK
+    - name: Setup Android SDK
       run: |
-        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools
-        cd /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools
+        # دابەزاندنی cmdline-tools
+        mkdir -p /opt/android-sdk/cmdline-tools
         wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-        unzip -q commandlinetools-linux-11076708_latest.zip
-        mv cmdline-tools latest
-        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
-        printf "8933bad161af4178b1185d1a37fbf41ea5269c55\n84835b44136933534d07d1f5624778d91c28c894\n" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        unzip -q commandlinetools-linux-11076708_latest.zip -d /opt/android-sdk/cmdline-tools
+        mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
         
+        # دیاریکردنی ژینگەکە
+        echo "ANDROID_HOME=/opt/android-sdk" >> $GITHUB_ENV
+        echo "PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_ENV
+    - name: Accept Licenses and Install Tools
+      run: |
+        yes | /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+        /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
     - name: Build with Buildozer
       run: |
-        export ANDROID_HOME=/home/runner/.buildozer/android/platform/android-sdk
-        export PATH=$PATH:/home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
+        # دیاریکردنی ڕێڕەوی SDK بۆ ئەوەی Buildozer دانەبەزێنێت
+        export ANDROID_HOME=/opt/android-sdk
+        export ANDROID_SDK_HOME=/opt/android-sdk
         buildozer android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
