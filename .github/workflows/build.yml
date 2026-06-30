@@ -12,9 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: 'temurin'
           java-version: '17'
 
       - name: Cache Buildozer compiled files
@@ -46,13 +47,16 @@ jobs:
             pkg-config \
             libtool-bin \
             autoconf-archive \
-            zlib1g-dev
+            zlib1g-dev \
+            zip \
+            unzip
 
       - name: Install Buildozer and Cython
         run: |
           python3 -m pip install --user --upgrade pip
           python3 -m pip install --user buildozer cython
 
-      - name: Build APK Cleanly
+      - name: Build APK with Auto-License Accept
         run: |
-          buildozer android debug
+          # ناردنی فەرمانی yes بۆ قبووڵکردنی ئۆتۆماتیکی مەرجەکانی گوگل و Build-Tools 37
+          yes | buildozer android debug
