@@ -14,18 +14,26 @@ jobs:
         sudo apt update
         sudo apt install -y python3-pip python3-setuptools python3-dev unzip openjdk-17-jdk
         sudo pip3 install --upgrade buildozer
-    - name: Build with Buildozer
+    - name: Setup SDK and Build
       run: |
-        # دروستکردنی فۆڵدەری مۆڵەت و قبوڵکردنیان
-        mkdir -p $HOME/.android
-        mkdir -p $HOME/.buildozer/android/platform/android-sdk/licenses
-        printf "8933bad161af4178b1185d1a37fbf41ea5269c55\n84835b44136933534d07d1f5624778d91c28c894\n" > $HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        # دروستکردنی پێکهاتەی پێویست بۆ ئەوەی Buildozer ڕازی بێت
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/tools/bin
+        
+        # دابەزاندنی cmdline-tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        unzip -q commandlinetools-linux-11076708_latest.zip
+        
+        # لکاندنی sdkmanager بۆ ئەو شوێنەی کە بیڵدۆزەر چاوەڕێی دەکات
+        # ئەمە ئەو کێشەی "does not exist" چارەسەر دەکات
+        ln -s $PWD/cmdline-tools/bin/sdkmanager /home/runner/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
+        
+        # پەسەندکردنی مۆڵەتەکان
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
+        printf "8933bad161af4178b1185d1a37fbf41ea5269c55\n84835b44136933534d07d1f5624778d91c28c894\n" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
         
         # بیڵدکردن
         buildozer android debug
       env:
-        # ئەم گۆڕاوە Buildozer ناچار دەکات مۆڵەتەکە قبوڵ بکات
-        # هەروەها دڵنیابە لە فایلی buildozer.spec هێڵی 'android.accept_sdk_license = True'ت داناوە
         ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
     - name: Upload APK
       uses: actions/upload-artifact@v4
