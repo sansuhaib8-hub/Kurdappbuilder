@@ -19,31 +19,41 @@ jobs:
 
       - uses: android-actions/setup-android@v3
 
-      - name: Install buildozer
+      - name: Install Buildozer
         run: |
-          pip3 install --upgrade buildozer cython
+          python3 -m pip install --user --upgrade pip
+          python3 -m pip install --user buildozer cython
 
-      - name: Prepare Buildozer SDK
+      - name: Prepare SDK for Buildozer
         run: |
-          SDK=$HOME/.buildozer/android/platform/android-sdk
+          SDK="$HOME/.buildozer/android/platform/android-sdk"
 
-          mkdir -p $SDK/licenses
+          mkdir -p "$SDK"
 
-          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $SDK/licenses/android-sdk-license
-          echo "8933bad161af4178b1185d1a37fbf41ea5269c55" >> $SDK/licenses/android-sdk-license
-          echo "84835b44136933534d07d1f5624778d91c28c894" >> $SDK/licenses/android-sdk-license
+          ln -sfn "$ANDROID_SDK_ROOT/cmdline-tools" "$SDK/cmdline-tools"
+          ln -sfn "$ANDROID_SDK_ROOT/platform-tools" "$SDK/platform-tools"
+          ln -sfn "$ANDROID_SDK_ROOT/build-tools" "$SDK/build-tools"
+          ln -sfn "$ANDROID_SDK_ROOT/platforms" "$SDK/platforms"
 
-          mkdir -p $SDK/tools/bin
-          ln -sf $(which sdkmanager) $SDK/tools/bin/sdkmanager
+          mkdir -p "$SDK/tools/bin"
+          ln -sfn "$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager" "$SDK/tools/bin/sdkmanager"
 
-          yes | $SDK/tools/bin/sdkmanager --licenses || true
+          mkdir -p "$SDK/licenses"
+          cat > "$SDK/licenses/android-sdk-license" <<EOL
+24333f8a63b6825ea9c5514f83c2829b004d1fee
+8933bad161af4178b1185d1a37fbf41ea5269c55
+84835b44136933534d07d1f5624778d91c28c894
+EOL
+
+          yes | "$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager" --licenses
 
       - name: Build APK
+        env:
+          ANDROIDSDK: ${{ github.workspace }}/../.buildozer/android/platform/android-sdk
         run: |
           buildozer android debug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: apk
           path: bin/*.apk
