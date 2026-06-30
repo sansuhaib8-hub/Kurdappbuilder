@@ -16,10 +16,15 @@ jobs:
         sudo pip3 install --upgrade buildozer
     - name: Build with Buildozer
       run: |
-        buildozer android debug
+        # دانانی فۆڵدەرە پێویستەکان
+        mkdir -p ~/.android
+        touch ~/.android/repositories.cfg
+        
+        # بیڵدۆزەر خۆی سێرچ دەکات بۆ SDK و دایاندەمەزرێنێت
+        # ئێمە تەنها داوای 'yes' دەکەین بۆ هەموو پرسیارەکانی مۆڵەت
+        yes | buildozer android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: package
         path: bin/*.apk
-
