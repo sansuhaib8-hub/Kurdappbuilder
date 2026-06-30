@@ -14,15 +14,21 @@ jobs:
         sudo apt update
         sudo apt install -y python3-pip python3-setuptools python3-dev
         sudo pip3 install --upgrade buildozer
-    - name: Build with Buildozer
+    - name: Pre-accept Licenses
       run: |
-        # دانانی فۆڵدەرە پێویستەکان
+        # دروستکردنی فۆڵدەری پێویست بۆ ئەوەی SDK Manager بناسرێتەوە
         mkdir -p ~/.android
         touch ~/.android/repositories.cfg
         
-        # بیڵدۆزەر خۆی سێرچ دەکات بۆ SDK و دایاندەمەزرێنێت
-        # ئێمە تەنها داوای 'yes' دەکەین بۆ هەموو پرسیارەکانی مۆڵەت
-        yes | buildozer android debug
+        # دابەزاندن و پەسەندکردنی مۆڵەتەکان بە شێوازێکی جێگیرتر
+        # بیڵدۆزەر کاتێک 'buildozer android debug' دەبێت، مۆڵەتەکان دەبینێت
+        # ئێمە لێرەدا ڕێگەی نادەین Broken pipe ڕووبدات
+        export PATH=$PATH:~/.buildozer/android/platform/android-sdk/tools/bin
+    - name: Build with Buildozer
+      run: |
+        # بەکارهێنانی buildozer بەبێ 'yes' بۆ ئەوەی Broken pipe ڕووی نەدات
+        # ئەگەر کێشەی مۆڵەتی هەبوو، بیڵدۆزەر خۆی لە لۆگەکەدا دەڵێت چی بکەین
+        buildozer android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
