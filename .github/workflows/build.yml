@@ -18,15 +18,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Cache Buildozer compiled files
+      - name: Cache Android SDK and Buildozer
         uses: actions/cache@v4
         with:
           path: |
             .buildozer
             ~/.buildozer
-          key: ${{ runner.os }}-buildozer-${{ github.run_id }}
+            ~/.android
+          key: ${{ runner.os }}-buildozer-v2-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-buildozer-
+            ${{ runner.os }}-buildozer-v2-
 
       - name: Install Android Build Dependencies
         run: |
