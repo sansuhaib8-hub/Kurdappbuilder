@@ -3,21 +3,20 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.widget import Widget
 from kivy.core.window import Window
-from kivy.graphics import Color, Line
 
 # ڕەنگی پێشینەی تاریکی سایبەرپەنک بەپێی وێنەکە
 Window.clearcolor = (0.05, 0.06, 0.1, 1)
 
 class KurdAppBuilder(App):
     def build(self):
-        # ١. لایەوتی سەرەکی (ستونی)
+        # لایەوتی سەرەکی (ستونی)
         root_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
         
         # ----------------- پانێڵی سەرەوە (TOP BAR) -----------------
         top_bar = BoxLayout(orientation='horizontal', size_hint_y=0.1, spacing=10)
         
-        # ناوی پڕۆژەکە بە شینی نیۆن
         title_label = Label(
             text="[b]Kurdappbuilder[/b]  project: KURDCONNECT", 
             markup=True, 
@@ -28,9 +27,7 @@ class KurdAppBuilder(App):
         )
         top_bar.add_widget(title_label)
         
-        # دوگمەی ڕەنکردن (Run)
         run_btn = Button(text="▶ Run", size_hint_x=0.15, background_color=(0, 0.6, 0.8, 1))
-        # دوگمەی دیپڵۆی (Deploy)
         deploy_btn = Button(text="🚀 Deploy", size_hint_x=0.15, background_color=(0, 0.8, 0.4, 1))
         
         top_bar.add_widget(run_btn)
@@ -46,11 +43,10 @@ class KurdAppBuilder(App):
         left_sidebar.add_widget(Button(text="Text Component", size_hint_y=0.15, background_color=(0.1, 0.15, 0.25, 1)))
         left_sidebar.add_widget(Button(text="Button Component", size_hint_y=0.15, background_color=(0.1, 0.15, 0.25, 1)))
         left_sidebar.add_widget(Button(text="List Component", size_hint_y=0.15, background_color=(0.1, 0.15, 0.25, 1)))
-        left_sidebar.add_widget(Widget()) # بۆشایی خوارەوە
+        left_sidebar.add_widget(Widget()) 
         
         # ناوەڕاست: شوێنی مۆبایلە ساختەکە (WORKSPACE)
         workspace = FloatLayout(size_hint_x=0.5)
-        # دروستکردنی شاشەی مۆبایل لە ناوەڕاستدا
         phone_screen = BoxLayout(
             orientation='vertical',
             size_hint=(None, None),
@@ -67,9 +63,8 @@ class KurdAppBuilder(App):
         right_sidebar.add_widget(Label(text="ID: btn_send", halign='left', size_hint_y=0.1))
         right_sidebar.add_widget(Label(text="Type: Button", halign='left', size_hint_y=0.1))
         right_sidebar.add_widget(Label(text="Style: Neon Glow", halign='left', size_hint_y=0.1))
-        right_sidebar.add_widget(Widget()) # بۆشایی خوارەوە
+        right_sidebar.add_widget(Widget()) 
         
-        # زیادکردنی هەر سێ پانێڵەکە بۆ جەستەی سەرەکی
         main_body.add_widget(left_sidebar)
         main_body.add_widget(workspace)
         main_body.add_widget(right_sidebar)
@@ -77,6 +72,5 @@ class KurdAppBuilder(App):
         root_layout.add_widget(main_body)
         return root_layout
 
-from kivy.uix.widget import Widget
 if __name__ == "__main__":
     KurdAppBuilder().run()
